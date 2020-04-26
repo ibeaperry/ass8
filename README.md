@@ -1,91 +1,74 @@
-# Using Heroku to deploy servlets and JSPs
-
-This tutorial will show you how to deploy a Heroku app that runs Servlets and JSPs.
-
-Check the currently deployed version: https://swe432tomcat.herokuapp.com
-
-# Create GitHub and Heroku accounts
-
-You can create accounts for free in both platforms (do not provide any payment info).
-
-## GitHub
-
-Go to https://github.com/join and create your account.
-
-## Heroku
-
-Go to https://signup.heroku.com to create your account.
-
-Optional: You can use the GitHub student package found at https://www.heroku.com/github-students. 
-
-# Create a Git repo(sitory) and and link it to a Heroku app 
-
-If you have not installed Git before, you can get it here: https://git-scm.com/downloads.
-
-Now, follow these steps to bring this repo into your Github account:
-
-## 1. Get this repo locally in your machine:
-This code contains all necessary boilerplate for supporting servlets and JSPs in a Heroku app:
+# React App in Heroku
+Follow this tutorial get a React project deployed in Heroku, and running it your machine during development.
+## Getting the repo and creating your own
+First, go your GitHub webpage and create a new empty repo, get the repo's url and replace the string "https:<your_repo>.git" below.
+Now in your shell:
 ```
-git clone https://github.com/luminaxster/swe432tomcat.git
-```
-
-## 2. Create an empty repo in your Github:
-
-a. Go to [Github](www.github.com), login into your account, select the "repositories" tab, click on "New". Once in the "Create a new repository" page: give a name to your repo, make it private and let other options default, and click on "create repository".
-
-c. This will take you to your new repository's page. Copy the url to access your repo in the quick setup section.
-It should look like this:
-
-``` https://github.com/<your_username>/<newly_created_repo_name>.git```
-
-We will use this URL in step 3.
-
-## 3. Redirect the local repo to your own repo and save the changes:
-
-Remember to replace the url from step 2 ( ``` https://github.com/<your_username>/<newly_created_repo_name>.git ``` ) with your own repo's url.
-
-```
-cd swe432tomcat
-git init
-git remote set-url origin "https://github.com/<your_username>/<newly_created_repo_name>.git"
-git add .
-git commit -m "Initial commit: cloned repo"
+git clone https://github.com/luminaxster/swe432-heroku-react.git
+cd swe432-heroku-react/
+git init && git remote set-url origin "https:<your_repo>.git"
 git push
 ```
+Now go to your Heroku dashboard, create a new app and make these changes:
+1. Link your new repo, go to the app's deploy tab and choose "GitHub" deploy method,
+select <your_repo> from the list and enable automatic deploy.
 
-## 4. Create a Heroku app
+Go to your app's settings:
 
-Go to https://dashboard.heroku.com/apps: click on "New" > "Create New App", provide a name, and click on "create app".
+2. In Config Vars, reveal them, and add ```NODE_MODULES_CACHE``` with value ```false```.
 
-## 5. Link repo and deploy 
-
-Once in your Heroku app web page, select the "deploy" tab:
-
- a. set the deploy method to "Github"
- 
- b. authorize Heroku to access your GitHub repositories
- 
- c. select the recently created one
- 
- d. click on "connect"
- 
- e. activate automatic deploys
- 
- f. click on deploy the "master" branch (only this time so you can see the changes immediately)
- 
- g. Once your deploy is processed, click on "View"
- 
-## Updating your repo and redeploying
-
-You only have to push your changes on your repo and they will redeploy automatically.
+3.  Add the following url in build packs:
+``` https://buildpack-registry.s3.amazonaws.com/buildpacks/mars/create-react-app.tgz ```
 
 
-## Follow the original guide
-For more details about how to create a Tomcat setup from scratch, go to the Dev Center guide on how to [Create a Java Web Application using Embedded Tomcat](https://devcenter.heroku.com/articles/create-a-java-web-application-using-embedded-tomcat).
+Pushing changes in your repo should automatically deploy your app.
+### Troubleshooting
+If during deployment, you logs show an error like   ```npm ERR! Cannot read property 'match' of undefined```, you need to clean your Heroku server's cache, follow these commands:
+```
+heroku plugins:install heroku-repo
+heroku repo:purge_cache -a <your_heroku_app_name>
+```
+Don't forget to replace ```<your_heroku_app_name>``` with your app's name, now redeploy your app.
+If the error shows up again, only use ```heroku repo:purge_cache -a <your_heroku_app_name>```.
+More details [here](https://help.heroku.com/18PI5RSY/how-do-i-clear-the-build-cache). To stop this issue from keep happening make sure step 2 changes are set in your Heroku app.
 
-## Resources: 
+## Running locally
+Install node.js if you haven't already, and open a shell within the 'swe432-heroku-react' folder and run the commands:
+```
+npm install
+npm run start
+```
+your local app should be running at ``` localhost:3000 ```.
 
-https://kbroman.org/github_tutorial/pages/init.html  
+### Note
+Run ``` npm install``` every time you add packages to your ```package.json```, and use ```npm run start``` every time you want to run your app locally (let this command running, it will re-run your program and refresh your browser every time you make your changes to your code).
 
+### Troubleshooting
+If you get a criptic error like ```throw er; // Unhandled 'error' event``` during ```npm install```, try removing the package-lock.json file and the node_modules folder, then try re-running the command. You can try these commands in your shell too (assuming you are in the project's root folder):
+
+```
+rm package-lock.json
+rm yarn.lock
+rm -rf ./node_modules
+npm install
+```
+
+# References
+[Creating a React app for Hook from scratch](https://github.com/mars/create-react-app-buildpack)
+
+[Learning about React Hooks (watch Dan's video)](https://reactjs.org/docs/hooks-intro.html)
+
+[Fancy UI](https://material-ui.com/)
+
+[React Hook types](https://reactjs.org/docs/hooks-overview.html)
+
+[JS Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+[Async Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+
+[JS keyword Await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)
+
+[A fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+[A URL to fetch for](https://randomuser.me/)
 
