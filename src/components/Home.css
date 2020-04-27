@@ -63,3 +63,11 @@
   left: -.25em;
   outline: 0.25rem solid lightblue;
 }
+thead {color:green;}
+tbody {color:blue;}
+table, th, td {
+ border: 1px solid black;
+}
+td, th{
+ padding: 5px;
+}

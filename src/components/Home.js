@@ -13,6 +13,7 @@ import {
 import StarRatings from 'react-star-ratings';
 import PropTypes from 'prop-types';
 import './Home.css';
+import Magic from './magic';
 // import StarRating from './star';
 
 const buildings = [
@@ -37,15 +38,6 @@ const buildings = [
       lable: 'Engineering Building',
   },
 ]
-const Star = ({ selected=false, onClick=f=>f }) =>
-<div className={(selected) ? "star selected" : "star"}
-    onClick={onClick}>
-</div>
-Star.propTypes = {
-  selected: PropTypes.bool,
-  onClick: PropTypes.func
-}
-
 class App extends React.Component{
   constructor(props){
     super(props);
@@ -57,6 +49,7 @@ class App extends React.Component{
     this.dateChange = this.dateChange.bind(this);
     this.starChange = this.starChange.bind(this);
     this.changeComment = this.changeComment.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.state={
       first:'',
       last:'',
@@ -67,17 +60,110 @@ class App extends React.Component{
       rate:0,
       comment:'',
       starSelected: 0,
-      testData:''
+      testData:'',
+      ress:''
     };
   }
-
+  handleSubmit(event){
+    console.log("STARTING HANDLESUBMIT!");
+    const data = new FormData();
+    console.log("formdata made?");
+    data.append('first_name',this.state.first);
+    console.log("first append?");
+    console.log(this.state.first);
+    data.append('last_name',this.state.last);
+    console.log(this.state.last);
+    data.append('email',this.state.email);
+    console.log(this.state.email);
+    data.append('number',this.state.number);
+    console.log(this.state.number);
+    data.append('building',this.state.building);
+    console.log(this.state.building);
+    data.append('Date_of_Visit',this.state.visit);
+    console.log(this.state.visit);
+    data.append('rating',this.state.starSelected);
+    console.log(this.state.starSelected);
+    data.append('Comments',this.state.comment);
+    console.log(this.state.comment);
+    fetch('https://swe432-assign8-backend.herokuapp.com/writeReview', {
+      method: 'POST',
+      body: data
+    })
+    .then((response) => response.json())
+    .then((data) =>{
+      console.log('then Success: ', data);
+      console.log(data.entries);
+      for(var i = 0; i < data.entries.length; i++){
+        var obj = data.entries[i];
+        console.log(i);
+        console.log(obj);
+        console.log(obj.first_name);
+      }
+      console.log(data[0])
+      this.setState({
+        ress: data
+      })
+    })
+    .catch((error) => {
+      console.log('why you error: ', error)
+    });
+  }
+  changeFirst(rating){
+    this.setState({
+      first: rating.target.value
+    })
+  }
+  changeLast(rating){
+    this.setState({
+      last: rating.target.value
+    })
+  }
+  changeEmail(rating){
+    this.setState({
+      email: rating.target.value
+    })
+  }
+  changeNumber(rating){
+    this.setState({
+      number: rating.target.value
+    })
+  }
+  buildingChange(build){
+    this.setState({
+      building: build.target.value
+    })
+  }
+  dateChange(date){
+    this.setState({
+      visit: date
+    })
+  }
+  starChange(starsSelected){
+    this.setState({
+      starSelected: starsSelected.target.value
+    });
+    console.log(this.state);
+  }
+  changeRating(rating){
+    this.setState({
+      rate: rating.target.value
+    })
+  }
+  changeComment(rating){
+    this.setState({
+      comment: rating.target.value
+    });
+    console.log(this.state);
+  }
   render(){
     const totalStars = 5;
     const starsSelected = this.state.starSelected;
     return(
       <div>
+      <div>
       {/* <form method="POST" action="https://cs.gmu.edu:8443/offutt/servlet/formHandler"> */}
-        <form method="POST" action="https://swe471-proj1.herokuapp.com/server">
+        {/* <form method="POST" action="https://swe471-proj1.herokuapp.com/server"> */}
+        <form>
         <TextField
           required
           name='first_name'
@@ -125,16 +211,15 @@ class App extends React.Component{
           id="filled-required"
           style={{width: '98%'}} 
           label="Building"
-          value={this.state.build}
           onChange={this.buildingChange}
           variant="filled"
         >   
-        {buildings.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-                {option.lable}
-            </MenuItem>
-        ))}
-            </TextField>
+          {buildings.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                  {option.lable}
+              </MenuItem>
+          ))}
+        </TextField>
         
         
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -153,40 +238,27 @@ class App extends React.Component{
                     }}
                 />
         </MuiPickersUtilsProvider>
-        {/* <div className="star-rating" >
-          
-          {[1,2,3,4,5].map((n, i) =>
-               <Star key={i}
-               name='rating'
-               id='rating'
-               value={starsSelected}
-                     selected={i < starsSelected}
-                     onClick={() => this.starChange(i+1)}
-              />)}
-
-            <p>{starsSelected} of {totalStars} stars</p>
-        </div> */}
         
-        <fieldset class="star-rating">
-                <legend class="star-rating__title">Your rating:</legend>
+        <fieldset className="star-rating">
+                <legend className="star-rating__title">Your rating:</legend>
                 
-                <div class="star-rating__stars">
-                  <input class="star-rating__input" type="radio" name="rating" value="1" id="rating-1" />
-                  <label class="star-rating__label" for="rating-1" aria-label="One"></label>
+                <div className="star-rating__stars">
+                  <input className="star-rating__input" type="radio" name="rating" value="1" id="rating-1" onChange={this.starChange} />
+                  <label className="star-rating__label" htmlFor="rating-1" aria-label="One"></label>
                   
-                  <input class="star-rating__input" type="radio" name="rating" value="2" id="rating-2" />
-                  <label class="star-rating__label" for="rating-2" aria-label="Two"></label>
+                  <input className="star-rating__input" type="radio" name="rating" value="2" id="rating-2"  onChange={this.starChange}/>
+                  <label className="star-rating__label" htmlFor="rating-2" aria-label="Two"></label>
                   
-                  <input class="star-rating__input" type="radio" name="rating" value="3" id="rating-3" />
-                  <label class="star-rating__label" for="rating-3" aria-label="Three"></label>
+                  <input className="star-rating__input" type="radio" name="rating" value="3" id="rating-3"  onChange={this.starChange}/>
+                  <label className="star-rating__label" htmlFor="rating-3" aria-label="Three"></label>
                   
-                  <input class="star-rating__input" type="radio" name="rating" value="4" id="rating-4" />
-                  <label class="star-rating__label" for="rating-4" aria-label="Four"></label>
+                  <input className="star-rating__input" type="radio" name="rating" value="4" id="rating-4"  onChange={this.starChange}/>
+                  <label className="star-rating__label" htmlFor="rating-4" aria-label="Four"></label>
                   
-                  <input class="star-rating__input" type="radio" name="rating" value="5" id="rating-5" />
-                  <label class="star-rating__label" for="rating-5" aria-label="Five"></label>
+                  <input className="star-rating__input" type="radio" name="rating" value="5" id="rating-5" onChange={this.starChange} />
+                  <label className="star-rating__label" htmlFor="rating-5" aria-label="Five"></label>
                   
-                  <div class="star-rating__focus"></div>
+                  <div className="star-rating__focus"></div>
                 </div>
             </fieldset>
 
@@ -199,10 +271,27 @@ class App extends React.Component{
           style={{width: '98%'}} 
           onChange={this.changeComment}
         />
-        <button type="submit">Take the shot!</button>
-        {/* onClick={this.handleSubmit} */}
+        <button  onClick={this.handleSubmit}>Take the shot!</button>
+        {/* type="submit" */}
         </form>
       </div>
+      
+      <div>
+        {this.state.ress === '' &&
+          <p>
+            Pls work
+          </p>}
+
+        {this.state.ress !== '' &&
+          <p>
+            Yay!
+          </p>}
+          <div>
+            <Magic/>
+          </div>
+      </div>
+
+    </div>
     );
   }
 }
