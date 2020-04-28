@@ -90,7 +90,10 @@ class App extends Component{
         <Paper>
             {data.length > 0 && 
                 <div>
-                    Average Rating: {this.state.average}
+                    <p>
+                    <a href="../">Return to form submition</a>
+                    </p>
+                    <p>Average Rating: {this.state.average}</p>
                     <b></b>
                 </div>
             }

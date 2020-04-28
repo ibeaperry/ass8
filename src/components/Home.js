@@ -160,6 +160,7 @@ class App extends React.Component{
     const starsSelected = this.state.starSelected;
     return(
       <div>
+      <p><a href="./submitions">View Results</a></p>
       <div>
       {/* <form method="POST" action="https://cs.gmu.edu:8443/offutt/servlet/formHandler"> */}
         {/* <form method="POST" action="https://swe471-proj1.herokuapp.com/server"> */}
@@ -271,26 +272,11 @@ class App extends React.Component{
           style={{width: '98%'}} 
           onChange={this.changeComment}
         />
-        <button  onClick={this.handleSubmit}>Take the shot!</button>
+        <button type="submit" onClick={this.handleSubmit}>Take the shot!</button>
         {/* type="submit" */}
         </form>
       </div>
-      
-      <div>
-        {this.state.ress === '' &&
-          <p>
-            Pls work
-          </p>}
-
-        {this.state.ress !== '' &&
-          <p>
-            Yay!
-          </p>}
-          <div>
-            <Magic/>
-          </div>
-      </div>
-
+     
     </div>
     );
   }
